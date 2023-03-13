@@ -4,6 +4,7 @@ import TickerPrices from './TickerPrices'
 import FetchPrice from './FetchPrice'
 import LeverageCalculator from './LeverageCalculator'
 import NewsApi from './NewsApi'
+import DemoApi from './DemoApi'
 const Container = styled.div`
  display: flex;
  flex-direction: column;
@@ -80,7 +81,7 @@ function Hero() {
  return (
   <Container>
    <Header>
-    <h2>Margoitti Law</h2>
+    <h2>Galico Tracker</h2>
 
     <Nav>
      <NavLinks>
@@ -101,6 +102,7 @@ function Hero() {
     {/* <h1>Welcome to my website</h1> */}
     {/* <TickerPrices /> */}
     <NewsApi />
+    {/* <DemoApi /> */}
    </Main>
 
    {/* <Section>

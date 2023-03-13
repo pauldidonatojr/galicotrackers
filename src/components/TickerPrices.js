@@ -11,6 +11,9 @@ const TickerPrices = () => {
   'FXS-USDT',
   'MKR-USDT',
   'USDC-USDT',
+  'MASK-USDT',
+  'FTM-USDT',
+  'ETH-USDT',
  ]
  const [refreshKey, setRefreshKey] = useState(Date.now())
 
@@ -53,6 +56,7 @@ const TickerPrices = () => {
 
  return (
   <Wrapper key={refreshKey}>
+   <h1> Watch List </h1>
    <table>
     <thead>
      <tr>
