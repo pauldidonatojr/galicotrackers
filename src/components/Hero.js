@@ -100,8 +100,8 @@ function Hero() {
 
    <Main>
     {/* <h1>Welcome to my website</h1> */}
-    {/* <TickerPrices /> */}
-    <NewsApi />
+    <TickerPrices />
+
     {/* <DemoApi /> */}
    </Main>
 
