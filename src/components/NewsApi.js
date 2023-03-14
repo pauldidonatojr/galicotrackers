@@ -1,106 +1,96 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import styled from 'styled-components'
 
-const ArticleContainer = styled.div`
+const ArticleCard = styled.div`
  margin-bottom: 20px;
+ border: 1px solid #ccc;
  padding: 20px;
- border: 1px solid gray;
- border-radius: 5px;
+ &:hover {
+  cursor: pointer;
+ }
 `
 
 const ArticleTitle = styled.h3`
+ font-size: 1.5rem;
  margin-bottom: 10px;
 `
 
 const ArticleContent = styled.p`
- margin-bottom: 10px;
+ font-size: 1.2rem;
  line-height: 1.5;
-`
-
-const ReadMoreButton = styled.button`
- background-color: #fff;
- border: 1px solid gray;
- border-radius: 5px;
- padding: 10px;
- cursor: pointer;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ display: -webkit-box;
+ -webkit-line-clamp: 8; /* number of lines to show */
+ -webkit-box-orient: vertical;
 `
 
 const Overlay = styled.div`
  position: fixed;
  top: 0;
  left: 0;
- width: 100%;
  height: 100%;
+ width: 100%;
  background-color: rgba(0, 0, 0, 0.5);
  display: flex;
  justify-content: center;
  align-items: center;
+ z-index: 1;
 `
 
 const OverlayContent = styled.div`
+ position: relative;
  background-color: #fff;
- border: 1px solid gray;
- border-radius: 5px;
  padding: 20px;
- max-width: 80%;
- max-height: 80%;
- overflow: auto;
+ max-width: 800px;
+ max-height: 80vh;
+ overflow-y: scroll;
 `
 
-function ArticleList() {
+function NewsList() {
  const [articles, setArticles] = useState([])
- const [currentPage, setCurrentPage] = useState(1)
- const [showOverlay, setShowOverlay] = useState(false)
- const [overlayContent, setOverlayContent] = useState('')
+ const [selectedArticle, setSelectedArticle] = useState(null)
 
  useEffect(() => {
-  async function fetchData() {
-   const pageSize = 5
-   const startIndex = (currentPage - 1) * pageSize
-   const url = `https://galiconewsapi.netlify.app/api/newsdata`
-   const response = await fetch(url)
-   const data = await response.json()
-   setArticles(data.articles)
+  async function fetchArticles() {
+   try {
+    const response = await axios.get(
+     'https://galiconewsapi.netlify.app/api/newsdata'
+    )
+    setArticles(response.data)
+   } catch (error) {
+    console.error(error)
+   }
   }
-  fetchData()
- }, [currentPage])
+  fetchArticles()
+ }, [])
 
- function handlePageChange(newPage) {
-  setCurrentPage(newPage)
+ function handleArticleClick(article) {
+  setSelectedArticle(article)
  }
 
- function handleReadMoreClick(content) {
-  setShowOverlay(true)
-  setOverlayContent(content)
- }
-
- function handleCloseOverlay() {
-  setShowOverlay(false)
+ function handleOverlayClick() {
+  setSelectedArticle(null)
  }
 
  return (
   <div>
-   <h2>Articles about Philadelphia</h2>
+   <h2>Latest News Articles</h2>
    {articles.map((article) => (
-    <ArticleContainer key={article.url}>
+    <ArticleCard
+     key={article.publishedAt}
+     onClick={() => handleArticleClick(article)}
+    >
      <ArticleTitle>{article.title}</ArticleTitle>
-     <ArticleContent>{article.content.slice(0, 100)}...</ArticleContent>
-     <ReadMoreButton onClick={() => handleReadMoreClick(article.content)}>
-      Read More
-     </ReadMoreButton>
-    </ArticleContainer>
+     <ArticleContent>{article.content}</ArticleContent>
+    </ArticleCard>
    ))}
-   <div className="pagination">
-    {[1, 2, 3, 4, 5].map((page) => (
-     <button key={page} onClick={() => handlePageChange(page)}>
-      {page}
-     </button>
-    ))}
-   </div>
-   {showOverlay && (
-    <Overlay onClick={handleCloseOverlay}>
-     <OverlayContent onClick={(event) => event.stopPropagation()}>
-      <p>{overlayContent}</p>
+   {selectedArticle && (
+    <Overlay onClick={handleOverlayClick}>
+     <OverlayContent>
+      <ArticleTitle>{selectedArticle.title}</ArticleTitle>
+      <p>{selectedArticle.content}</p>
      </OverlayContent>
     </Overlay>
    )}
@@ -108,4 +98,4 @@ function ArticleList() {
  )
 }
 
-export default ArticleList
+export default NewsList
